@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moja webová stránka</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #e2e8f0;
+      --accent: #38bdf8;
+      --accent-strong: #0ea5e9;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.18), transparent 35%),
+                  radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.16), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 3rem 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      transition: color 0.2s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      display: grid;
+      gap: 1.5rem;
+      padding: 2.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: var(--radius);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.25rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      max-width: 700px;
+      color: #cbd5e1;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .button,
+    .button-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.95rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      text-decoration: none;
+      color: white;
+    }
+
+    .button {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.22);
+    }
+
+    .button-secondary {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .button:hover,
+    .button-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      padding: 1.6rem;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      margin-bottom: 0.85rem;
+      font-size: 1.15rem;
+      color: white;
+    }
+
+    .card p {
+      color: #cbd5e1;
+    }
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="brand">Teo12333</div>
+      <nav>
+        <a href="#about">O mne</a>
+        <a href="#sluzby">Služby</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>Moderná slovenská webstránka pre tvoj projekt</h1>
+        <p>Jednoduchý a čistý dizajn s responzívnym rozložením. Využi tento template na portfólio, osobnú stránku alebo malú prezentačnú stránku.</p>
+        <div class="buttons">
+          <a class="button" href="#sluzby">Začni teraz</a>
+          <a class="button-secondary" href="#kontakt">Napíš mi</a>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <h2>Rýchly štart</h2>
+          <p>Jednoduché upravovanie textov, farieb a sekcií podľa vlastných potrieb.</p>
+        </article>
+        <article class="card">
+          <h2>Responzívne</h2>
+          <p>Vzhľad sa prispôsobí na telefónoch, tabletoch aj desktopoch bez ďalších knižníc.</p>
+        </article>
+        <article class="card">
+          <h2>Moderný štýl</h2>
+          <p>Tmavé pozadie s jemnými gradientmi a elegantnými tlačidlami pre profesionálny dojem.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="hero" style="margin-top: 2rem;">
+      <h2>O tejto stránke</h2>
+      <p>Táto šablóna je určená pre jednoduché osobné alebo firemné stránky. Stačí vymeniť texty, nahrať vlastné obrázky a pridať vlastný obsah v sekciách.</p>
+    </section>
+
+    <section id="sluzby" class="hero" style="margin-top: 2rem;">
+      <h2>Služby</h2>
+      <div class="cards">
+        <article class="card">
+          <h2>Web design</h2>
+          <p>Pripravím pre teba čistý layout a grafiku, ktorá zaujme návštevníkov.</p>
+        </article>
+        <article class="card">
+          <h2>Úpravy</h2>
+          <p>Rýchle zmeny obsahu, farieb a rozloženia bez nutnosti prepisovať celý kód.</p>
+        </article>
+        <article class="card">
+          <h2>Hosting</h2>
+          <p>Stránku môžeš nasadiť okamžite napríklad na GitHub Pages alebo Netlify.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer id="kontakt">
+      <p>Potrebujete pomoc s webom? Kontaktujte ma na e-mail: info@example.com</p>
+    </footer>
+  </main>
+</body>
+</html>
