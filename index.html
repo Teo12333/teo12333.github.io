@@ -152,6 +152,70 @@
       color: #94a3b8;
       font-size: 0.95rem;
     }
+
+    /* Game Styles */
+    .game-section {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    .game-section h2 {
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    #gameContainer {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(16, 185, 129, 0.1));
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      cursor: crosshair;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .bubble:hover {
+      transform: scale(1.1);
+    }
+
+    .score-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin: 1rem 0;
+    }
+
+    .game-button {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin: 0.5rem;
+    }
+
+    .game-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -217,14 +281,136 @@
 
     <footer id="kontakt">
       <p>Potrebujete pomoc? Kontaktujte ma na e-mail: galaxyteo3@gmail.com</p>
-      <a href="gmail.com"><p>E-mail</p></a>
+      <a href="mailto:galaxyteo3@gmail.com"><p>E-mail</p></a>
+      <p>© 2026 Teo Neupauer</p>
     </footer>
+
+    <section class="game-section">
+      <h2>🎮 Mini Hra - Klikaj na Bubliny!</h2>
+      <p style="color: #cbd5e1; margin-bottom: 1rem;">Klikaj na lietajúce bubliny a zbieraj body. Koľko ich zmáčkneš za 30 sekúnd?</p>
+      <div class="score-display">Score: <span id="score">0</span></div>
+      <div class="score-display">Čas: <span id="timer">30</span>s</div>
+      <div id="gameContainer"></div>
+      <button class="game-button" id="startBtn">Spustiť Hru</button>
+      <button class="game-button" id="resetBtn">Resetovať</button>
+    </section>
   </main>
   <style>
     html {
         scroll-behavior: smooth;
     }
+  </style>
 
-</style>
+  <script>
+    // Game Logic
+    let score = 0;
+    let timeLeft = 30;
+    let gameRunning = false;
+    let bubbles = [];
+
+    const gameContainer = document.getElementById('gameContainer');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const colors = ['#38bdf8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+
+    function createBubble() {
+      if (!gameRunning) return;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+
+      const size = Math.random() * 40 + 30; // 30-70px
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      bubble.style.background = randomColor;
+      bubble.style.opacity = '0.8';
+
+      const x = Math.random() * (gameContainer.clientWidth - size);
+      const y = Math.random() * (gameContainer.clientHeight - size);
+
+      bubble.style.left = x + 'px';
+      bubble.style.top = y + 'px';
+
+      bubble.onclick = (e) => {
+        e.stopPropagation();
+        score++;
+        scoreDisplay.textContent = score;
+        bubble.remove();
+      };
+
+      gameContainer.appendChild(bubble);
+
+      // Animate bubble floating up
+      let bubbleY = y;
+      const bubbleInterval = setInterval(() => {
+        if (!gameRunning || !bubble.parentElement) {
+          clearInterval(bubbleInterval);
+          return;
+        }
+
+        bubbleY -= 2;
+        bubble.style.top = bubbleY + 'px';
+
+        // Remove when off screen
+        if (bubbleY < -100) {
+          clearInterval(bubbleInterval);
+          bubble.remove();
+        }
+      }, 30);
+    }
+
+    function startGame() {
+      if (gameRunning) return;
+
+      score = 0;
+      timeLeft = 30;
+      gameRunning = true;
+      scoreDisplay.textContent = '0';
+      timerDisplay.textContent = '30';
+      startBtn.disabled = true;
+      gameContainer.innerHTML = '';
+
+      // Create bubbles every 600ms
+      const bubbleInterval = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(bubbleInterval);
+          return;
+        }
+        createBubble();
+      }, 600);
+
+      // Timer countdown
+      const timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          clearInterval(bubbleInterval);
+          gameRunning = false;
+          gameContainer.innerHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--accent); font-size: 1.5rem; text-align: center;"><strong>Hra skončila!</strong><br>Tvoj skóre: ${score}</div>`;
+          startBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function resetGame() {
+      gameRunning = false;
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = '0';
+      timerDisplay.textContent = '30';
+      gameContainer.innerHTML = '';
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetGame);
+  </script>
 </body>
 </html>
