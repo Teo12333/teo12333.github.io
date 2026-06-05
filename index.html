@@ -514,6 +514,10 @@
           body.classList.add('light-mode');
           lightModeBtn.classList.add('active');
           darkModeBtn.classList.remove('active');
+        } else {
+          body.classList.remove('light-mode');
+          darkModeBtn.classList.add('active');
+          lightModeBtn.classList.remove('active');
         }
 
         lightModeBtn.addEventListener('click', () => {
