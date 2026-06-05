@@ -20,7 +20,6 @@
       <nav>
         <a href="#zaklady">O mne</a>
         <a href="#sluzby">Zručnosti</a>
-        <a href="#game">Hra</a>
         <a href="#kontakt">Kontakt</a>
       </nav>
     </header>
@@ -61,141 +60,22 @@
       <h2>Zručnosti</h2>
       <div class="cards">
         <article class="card">
-          <h2>Web</h2>
-          <p>Ovládam vytváranie jednoduchých webových stránok, ktoré majú responzívny dizajn.</p>
+          <h2>Cisco Packet Tracer</h2>
+          <p>Ovládam vytváranie a konfiguráciu jednoduchých sieťových simulácií.</p>
         </article>
         <article class="card">
           <h2>Programovanie</h2>
-          <p>Viem programovať v jazykoch HTML, CSS a Python.</p>
+          <p>Mám skúsenosti s programovaním v jazykoch C, C++, Python a s tvorbou webových stránok pomocou HTML a CSS.</p>
         </article>
         <article class="card">
-          <h2>Práca s PC</h2>
-          <p>Viem pracovať s počítačom a základnými softwaremi (Word, Excel, PowerPoint).</p>
+          
+          <h2>Práca s PC, strojopis</h2>
+          <p>Viem pracovať s počítačom a základnými softwaremi (Word, Excel, PowerPoint). Ovládam písanie 10 prstami.</p>
         </article>
       </div>
     </section>
-    <section id="game" class="hero" style="margin-top: 2rem;">
-      <section class="game-section">
-        <h2>🎮 Mini Hra - Klikaj na Bubliny!</h2>
-        <p style="color: #cbd5e1; margin-bottom: 1rem;">Klikaj na lietajúce bubliny a zbieraj body. Koľko ich zmáčkneš za 30 sekúnd?</p>
-        <div class="score-display">Score: <span id="score">0</span></div>
-        <div class="score-display">Čas: <span id="timer">30</span>s</div>
-        <div id="gameContainer"></div>
-        <button class="game-button" id="startBtn">Spustiť Hru</button>
-        <button class="game-button" id="resetBtn">Resetovať</button>
-      </section>
       </main>
       <script>
-        // Game Logic
-        let score = 0;
-        let timeLeft = 30;
-        let gameRunning = false;
-        let bubbles = [];
-
-        const gameContainer = document.getElementById('gameContainer');
-        const scoreDisplay = document.getElementById('score');
-        const timerDisplay = document.getElementById('timer');
-        const startBtn = document.getElementById('startBtn');
-        const resetBtn = document.getElementById('resetBtn');
-
-        const colors = ['#38bdf8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-
-        function createBubble() {
-          if (!gameRunning) return;
-
-          const bubble = document.createElement('div');
-          bubble.className = 'bubble';
-
-          const size = Math.random() * 40 + 30; // 30-70px
-          bubble.style.width = size + 'px';
-          bubble.style.height = size + 'px';
-
-          const randomColor = colors[Math.floor(Math.random() * colors.length)];
-          bubble.style.background = randomColor;
-          bubble.style.opacity = '0.8';
-
-          const x = Math.random() * (gameContainer.clientWidth - size);
-          const y = Math.random() * (gameContainer.clientHeight - size);
-
-          bubble.style.left = x + 'px';
-          bubble.style.top = y + 'px';
-
-          bubble.onclick = (e) => {
-            e.stopPropagation();
-            score++;
-            scoreDisplay.textContent = score;
-            bubble.remove();
-          };
-
-          gameContainer.appendChild(bubble);
-
-          // Animate bubble floating up
-          let bubbleY = y;
-          const bubbleInterval = setInterval(() => {
-            if (!gameRunning || !bubble.parentElement) {
-              clearInterval(bubbleInterval);
-              return;
-            }
-
-            bubbleY -= 2;
-            bubble.style.top = bubbleY + 'px';
-
-            // Remove when off screen
-            if (bubbleY < -100) {
-              clearInterval(bubbleInterval);
-              bubble.remove();
-            }
-          }, 30);
-        }
-
-        function startGame() {
-          if (gameRunning) return;
-
-          score = 0;
-          timeLeft = 30;
-          gameRunning = true;
-          scoreDisplay.textContent = '0';
-          timerDisplay.textContent = '30';
-          startBtn.disabled = true;
-          gameContainer.innerHTML = '';
-
-          // Create bubbles every 600ms
-          const bubbleInterval = setInterval(() => {
-            if (!gameRunning) {
-              clearInterval(bubbleInterval);
-              return;
-            }
-            createBubble();
-          }, 600);
-
-          // Timer countdown
-          const timerInterval = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-              clearInterval(timerInterval);
-              clearInterval(bubbleInterval);
-              gameRunning = false;
-              gameContainer.innerHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--accent); font-size: 1.5rem; text-align: center;"><strong>Hra skončila!</strong><br>Tvoj skóre: ${score}</div>`;
-              startBtn.disabled = false;
-            }
-          }, 1000);
-        }
-
-        function resetGame() {
-          gameRunning = false;
-          score = 0;
-          timeLeft = 30;
-          scoreDisplay.textContent = '0';
-          timerDisplay.textContent = '30';
-          gameContainer.innerHTML = '';
-          startBtn.disabled = false;
-        }
-
-        startBtn.addEventListener('click', startGame);
-        resetBtn.addEventListener('click', resetGame);
-
         // Theme Switching
         const lightModeBtn = document.getElementById('lightModeBtn');
         const darkModeBtn = document.getElementById('darkModeBtn');
@@ -228,34 +108,35 @@
           localStorage.setItem('theme', 'dark');
         });
       </script>
-  </section>
-  </body>
 
-<footer id="kontakt">
-      <p>Potrebujete pomoc? Kontaktujte ma na e-mail: galaxyteo3@gmail.com</p>
-      <a href="mailto:galaxyteo3@gmail.com"><p>E-mail</p></a>
-      <p>V prípade nejakých nejasností ma kontaktujte cez formulár</p>
-      <form
-        action="https://formspree.io/f/xdavkpqe"
-        method="POST"
-      >
-          <label>
-            <br>
-            Your email:
-            <input type="email" name="email">
-            <br>
-            <br>
-          </label>
-          <label>
-            Your message:
-            <textarea name="message"></textarea>
-          </label>
-          <!-- your other form fields go here -->
-          <button type="submit">Send</button>
-      </form>
-      <br>
-      <p>© 2026 Teo Neupauer</p>
+    <footer id="kontakt">
+      <div class="footer-content">
+        <p>Potrebujete pomoc? Kontaktujte ma na e-mail: <a href="mailto:galaxyteo3@gmail.com">galaxyteo3@gmail.com</a></p>
+        <p>V prípade nejakých nejasností ma kontaktujte cez formulár</p>
+
+        <form id="contactForm" class="contact-form" action="https://formspree.io/f/xdavkpqe" method="POST" aria-label="Kontaktovací formulár">
+          <div class="form-field">
+            <label class="form-label">
+              Váš e-mail
+              <input class="form-input" type="email" name="email" placeholder="vas@email.sk" required>
+            </label>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">
+              Správa
+              <textarea class="form-textarea" name="message" rows="5" placeholder="Sem napíšte správu..." required></textarea>
+            </label>
+          </div>
+        </form>
+
+        <div class="submit-wrapper">
+          <button class="contact-button" type="submit" form="contactForm">Odoslať</button>
+        </div>
+
+        <p class="copyright">© 2026 Teo Neupauer</p>
+      </div>
     </footer>
 
-</body>
+  </body>
 </html>
