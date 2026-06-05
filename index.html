@@ -14,6 +14,94 @@
       --radius: 18px;
     }
 
+    /* Light Mode */
+    body.light-mode {
+      --bg: #ffffff;
+      --surface: #f1f5f9;
+      --text: #1e293b;
+      --accent: #0ea5e9;
+      --accent-strong: #0284c7;
+    }
+
+    body.light-mode .hero {
+      background: rgba(241, 245, 249, 0.95);
+      border: 1px solid rgba(15, 23, 42, 0.12);
+    }
+
+    body.light-mode .card {
+      background: rgba(241, 245, 249, 0.8);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+    }
+
+    body.light-mode .card h2,
+    body.light-mode .hero h1 {
+      color: #1e293b;
+    }
+
+    body.light-mode .card p,
+    body.light-mode .hero p {
+      color: #475569;
+    }
+
+    body.light-mode footer {
+      color: #64748b;
+    }
+
+    body.light-mode .game-section {
+      background: rgba(241, 245, 249, 0.8);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+    }
+
+    body.light-mode #gameContainer {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(16, 185, 129, 0.1));
+      border: 2px solid var(--accent);
+    }
+
+    /* Theme Switcher */
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-label {
+      font-size: 0.9rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .theme-buttons {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(148, 163, 184, 0.1);
+      padding: 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .theme-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .theme-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .theme-btn:hover:not(.active) {
+      color: var(--accent);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -222,9 +310,17 @@
   <main class="page">
     <header>
       <div class="brand">Teo Neupauer</div>
+      <div class="theme-switcher">
+        <span class="theme-label">Výber režimu:</span>
+        <div class="theme-buttons">
+          <button class="theme-btn active" id="lightModeBtn" title="Svetlý režim">⚪</button>
+          <button class="theme-btn" id="darkModeBtn" title="Tmavý režim">⚫</button>
+        </div>
+      </div>
       <nav>
         <a href="#zaklady">O mne</a>
         <a href="#sluzby">Zručnosti</a>
+        <a href="#game">Hra</a>
         <a href="#kontakt">Kontakt</a>
       </nav>
     </header>
@@ -278,139 +374,187 @@
         </article>
       </div>
     </section>
+    <section id="game" class="hero" style="margin-top: 2rem;">
+      <section class="game-section">
+        <h2>🎮 Mini Hra - Klikaj na Bubliny!</h2>
+        <p style="color: #cbd5e1; margin-bottom: 1rem;">Klikaj na lietajúce bubliny a zbieraj body. Koľko ich zmáčkneš za 30 sekúnd?</p>
+        <div class="score-display">Score: <span id="score">0</span></div>
+        <div class="score-display">Čas: <span id="timer">30</span>s</div>
+        <div id="gameContainer"></div>
+        <button class="game-button" id="startBtn">Spustiť Hru</button>
+        <button class="game-button" id="resetBtn">Resetovať</button>
+      </section>
+      </main>
+      <style>
+        html {
+            scroll-behavior: smooth;
+        }
+      </style>
 
-    <section class="game-section">
-      <h2>🎮 Mini Hra - Klikaj na Bubliny!</h2>
-      <p style="color: #cbd5e1; margin-bottom: 1rem;">Klikaj na lietajúce bubliny a zbieraj body. Koľko ich zmáčkneš za 30 sekúnd?</p>
-      <div class="score-display">Score: <span id="score">0</span></div>
-      <div class="score-display">Čas: <span id="timer">30</span>s</div>
-      <div id="gameContainer"></div>
-      <button class="game-button" id="startBtn">Spustiť Hru</button>
-      <button class="game-button" id="resetBtn">Resetovať</button>
-    </section>
-  </main>
-  <style>
-    html {
-        scroll-behavior: smooth;
-    }
-  </style>
+      <script>
+        // Game Logic
+        let score = 0;
+        let timeLeft = 30;
+        let gameRunning = false;
+        let bubbles = [];
 
-  <script>
-    // Game Logic
-    let score = 0;
-    let timeLeft = 30;
-    let gameRunning = false;
-    let bubbles = [];
+        const gameContainer = document.getElementById('gameContainer');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
-    const gameContainer = document.getElementById('gameContainer');
-    const scoreDisplay = document.getElementById('score');
-    const timerDisplay = document.getElementById('timer');
-    const startBtn = document.getElementById('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
+        const colors = ['#38bdf8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
-    const colors = ['#38bdf8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+        function createBubble() {
+          if (!gameRunning) return;
 
-    function createBubble() {
-      if (!gameRunning) return;
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
 
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
+          const size = Math.random() * 40 + 30; // 30-70px
+          bubble.style.width = size + 'px';
+          bubble.style.height = size + 'px';
 
-      const size = Math.random() * 40 + 30; // 30-70px
-      bubble.style.width = size + 'px';
-      bubble.style.height = size + 'px';
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
+          bubble.style.background = randomColor;
+          bubble.style.opacity = '0.8';
 
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      bubble.style.background = randomColor;
-      bubble.style.opacity = '0.8';
+          const x = Math.random() * (gameContainer.clientWidth - size);
+          const y = Math.random() * (gameContainer.clientHeight - size);
 
-      const x = Math.random() * (gameContainer.clientWidth - size);
-      const y = Math.random() * (gameContainer.clientHeight - size);
+          bubble.style.left = x + 'px';
+          bubble.style.top = y + 'px';
 
-      bubble.style.left = x + 'px';
-      bubble.style.top = y + 'px';
+          bubble.onclick = (e) => {
+            e.stopPropagation();
+            score++;
+            scoreDisplay.textContent = score;
+            bubble.remove();
+          };
 
-      bubble.onclick = (e) => {
-        e.stopPropagation();
-        score++;
-        scoreDisplay.textContent = score;
-        bubble.remove();
-      };
+          gameContainer.appendChild(bubble);
 
-      gameContainer.appendChild(bubble);
+          // Animate bubble floating up
+          let bubbleY = y;
+          const bubbleInterval = setInterval(() => {
+            if (!gameRunning || !bubble.parentElement) {
+              clearInterval(bubbleInterval);
+              return;
+            }
 
-      // Animate bubble floating up
-      let bubbleY = y;
-      const bubbleInterval = setInterval(() => {
-        if (!gameRunning || !bubble.parentElement) {
-          clearInterval(bubbleInterval);
-          return;
+            bubbleY -= 2;
+            bubble.style.top = bubbleY + 'px';
+
+            // Remove when off screen
+            if (bubbleY < -100) {
+              clearInterval(bubbleInterval);
+              bubble.remove();
+            }
+          }, 30);
         }
 
-        bubbleY -= 2;
-        bubble.style.top = bubbleY + 'px';
+        function startGame() {
+          if (gameRunning) return;
 
-        // Remove when off screen
-        if (bubbleY < -100) {
-          clearInterval(bubbleInterval);
-          bubble.remove();
+          score = 0;
+          timeLeft = 30;
+          gameRunning = true;
+          scoreDisplay.textContent = '0';
+          timerDisplay.textContent = '30';
+          startBtn.disabled = true;
+          gameContainer.innerHTML = '';
+
+          // Create bubbles every 600ms
+          const bubbleInterval = setInterval(() => {
+            if (!gameRunning) {
+              clearInterval(bubbleInterval);
+              return;
+            }
+            createBubble();
+          }, 600);
+
+          // Timer countdown
+          const timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+              clearInterval(timerInterval);
+              clearInterval(bubbleInterval);
+              gameRunning = false;
+              gameContainer.innerHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--accent); font-size: 1.5rem; text-align: center;"><strong>Hra skončila!</strong><br>Tvoj skóre: ${score}</div>`;
+              startBtn.disabled = false;
+            }
+          }, 1000);
         }
-      }, 30);
-    }
 
-    function startGame() {
-      if (gameRunning) return;
-
-      score = 0;
-      timeLeft = 30;
-      gameRunning = true;
-      scoreDisplay.textContent = '0';
-      timerDisplay.textContent = '30';
-      startBtn.disabled = true;
-      gameContainer.innerHTML = '';
-
-      // Create bubbles every 600ms
-      const bubbleInterval = setInterval(() => {
-        if (!gameRunning) {
-          clearInterval(bubbleInterval);
-          return;
-        }
-        createBubble();
-      }, 600);
-
-      // Timer countdown
-      const timerInterval = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          clearInterval(bubbleInterval);
+        function resetGame() {
           gameRunning = false;
-          gameContainer.innerHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--accent); font-size: 1.5rem; text-align: center;"><strong>Hra skončila!</strong><br>Tvoj skóre: ${score}</div>`;
+          score = 0;
+          timeLeft = 30;
+          scoreDisplay.textContent = '0';
+          timerDisplay.textContent = '30';
+          gameContainer.innerHTML = '';
           startBtn.disabled = false;
         }
-      }, 1000);
-    }
 
-    function resetGame() {
-      gameRunning = false;
-      score = 0;
-      timeLeft = 30;
-      scoreDisplay.textContent = '0';
-      timerDisplay.textContent = '30';
-      gameContainer.innerHTML = '';
-      startBtn.disabled = false;
-    }
+        startBtn.addEventListener('click', startGame);
+        resetBtn.addEventListener('click', resetGame);
 
-    startBtn.addEventListener('click', startGame);
-    resetBtn.addEventListener('click', resetGame);
-  </script>
+        // Theme Switching
+        const lightModeBtn = document.getElementById('lightModeBtn');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const html = document.documentElement;
+        const body = document.body;
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+          body.classList.add('light-mode');
+          lightModeBtn.classList.add('active');
+          darkModeBtn.classList.remove('active');
+        }
+
+        lightModeBtn.addEventListener('click', () => {
+          body.classList.add('light-mode');
+          lightModeBtn.classList.add('active');
+          darkModeBtn.classList.remove('active');
+          localStorage.setItem('theme', 'light');
+        });
+
+        darkModeBtn.addEventListener('click', () => {
+          body.classList.remove('light-mode');
+          darkModeBtn.classList.add('active');
+          lightModeBtn.classList.remove('active');
+          localStorage.setItem('theme', 'dark');
+        });
+      </script>
+  </section>
+  </body>
 
 <footer id="kontakt">
       <p>Potrebujete pomoc? Kontaktujte ma na e-mail: galaxyteo3@gmail.com</p>
       <a href="mailto:galaxyteo3@gmail.com"><p>E-mail</p></a>
-      <p>© 2026 Teo Neupauer</p>
+      <p>V prípade nejakých nejasností ma kontaktujte cez formulár</p>
+      <form
+        action="https://formspree.io/f/xdavkpqe"
+        method="POST"
+      >
+          <label>
+            <br>
+            Your email:
+            <input type="email" name="email">
+            <br>
+            <br>
+          </label>
+          <label>
+            Your message:
+            <textarea name="message"></textarea>
+          </label>
+          <!-- your other form fields go here -->
+          <button type="submit">Send</button>
+      </form>
       <style> 
         footer{
           text-align: center;
@@ -418,6 +562,8 @@
           margin-bottom: 20px;
         }
       </style>
+      <br>
+      <p>© 2026 Teo Neupauer</p>
     </footer>
 
 </body>
